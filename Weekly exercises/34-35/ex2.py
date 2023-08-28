@@ -21,7 +21,7 @@ beta = np.linalg.inv(X.T @ X) @ X.T @ y
 y_tilde = X @ beta
 
 # Scikit-learn
-"""i dont really understand if im supposed to compare my polyfit to scikit's linear regression...
+"""i dont really understand if im supposed to compare my polynomial to scikit's linear regression...
  but thats what the examples show and the tasks says to do it from the examples"""
 linreg = LinearRegression(fit_intercept=False)
 linreg.fit(x, y)
