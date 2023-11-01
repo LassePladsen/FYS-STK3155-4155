@@ -1,6 +1,6 @@
 import autograd.numpy as np
 
-def CostOLS(target):
+def cost_ols(target):
     
     def func(X):
         return (1.0 / target.shape[0]) * np.sum((target - X) ** 2)
@@ -8,7 +8,7 @@ def CostOLS(target):
     return func
 
 
-def CostLogReg(target):
+def cost_logreg(target):
 
     def func(X):
         
@@ -19,7 +19,7 @@ def CostLogReg(target):
     return func
 
 
-def CostCrossEntropy(target):
+def cost_crossentropy(target):
     
     def func(X):
         return -(1.0 / target.size) * np.sum(target * np.log(X + 10e-10))

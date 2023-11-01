@@ -18,24 +18,24 @@ def softmax(X):
     return np.exp(X) / (np.sum(np.exp(X), axis=-1, keepdims=True) + delta)
 
 
-def RELU(X):
+def relu(X):
     return np.where(X > np.zeros(X.shape), X, np.zeros(X.shape))
 
 
-def LRELU(X):
+def lrelu(X):
     delta = 10e-4
     return np.where(X > np.zeros(X.shape), X, delta * X)
 
 
 def derivate(func):
-    if func.__name__ == "RELU":
+    if func.__name__ == "relu":
 
         def func(X):
             return np.where(X > 0, 1, 0)
 
         return func
 
-    elif func.__name__ == "LRELU":
+    elif func.__name__ == "lrelu":
 
         def func(X):
             delta = 10e-4

@@ -2,15 +2,14 @@ import math
 import autograd.numpy as np
 import sys
 import warnings
-from autograd import grad, elementwise_grad
-from random import random, seed
-from copy import deepcopy, copy
-from typing import Tuple, Callable
+from autograd import grad
+from copy import copy
+from typing import Callable
 from sklearn.utils import resample
 
-from cost_functions import CostOLS, CostLogReg, CostCrossEntropy
-from activation_functions import identity, sigmoid, softmax, RELU, LRELU, derivate
-from learning_rate_methods import Scheduler, Constant
+from cost import cost_ols, cost_logreg, cost_crossentropy
+from activation import identity, sigmoid, softmax, relu, lrelu, derivate
+from scheduler import Scheduler, Constant
 
 
 warnings.simplefilter("error")
@@ -40,10 +39,10 @@ class FFNN:
 
     def __init__(
             self,
-            dimensions: tuple[int],
+            dimensions: tuple[int, ...],
             hidden_func: Callable = sigmoid,
             output_func: Callable = lambda x: x,
-            cost_func: Callable = CostOLS,
+            cost_func: Callable = cost_ols,
             seed: int = None,
     ):
         self.dimensions = dimensions
@@ -422,8 +421,8 @@ class FFNN:
         """
         self.classification = False
         if (
-                self.cost_func.__name__ == "CostLogReg"
-                or self.cost_func.__name__ == "CostCrossEntropy"
+                self.cost_func.__name__ == "cost_logreg"
+                or self.cost_func.__name__ == "cost_crossentropy"
         ):
             self.classification = True
 
@@ -467,7 +466,7 @@ class FFNN:
         return f"{value:.{decimals - n - 1}f}"
 
 
-"""if __name__ == "__main__":
+if __name__ == "__main__":
     X = np.asarray([
         [0, 0],
         [0, 1],
@@ -486,7 +485,7 @@ class FFNN:
         dimensions=(2, 2, 1),
         hidden_func=sigmoid,
         output_func=sigmoid,
-        cost_func=CostLogReg,
+        cost_func=cost_logreg,
         seed=2023,
     )
     obj.fit(
@@ -495,4 +494,4 @@ class FFNN:
         scheduler=Constant(eta=0.5),
         epochs=1000,
     )
-    print(obj.predict(X))"""
+    print(obj.predict(X))
