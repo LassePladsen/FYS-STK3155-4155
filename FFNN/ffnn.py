@@ -4,7 +4,7 @@ import sys
 import warnings
 from autograd import grad
 from copy import copy
-from typing import Callable
+from typing import Callable, Iterable
 from sklearn.utils import resample
 
 from cost import cost_ols, cost_logreg, cost_crossentropy
@@ -26,7 +26,7 @@ class FFNN:
 
     Attributes:
     ------------
-        I   dimensions (tuple[int]): A list of positive integers, which specifies the
+        I   dimensions (Iterable[int]): An iterable of positive integers, which specifies the
             number of nodes in each of the networks layers. The first integer in the array
             defines the number of nodes in the input layer, the second integer defines number
             of nodes in the first hidden layer and so on until the last number, which
@@ -39,7 +39,7 @@ class FFNN:
 
     def __init__(
             self,
-            dimensions: tuple[int, ...],
+            dimensions: Iterable[int],
             hidden_func: Callable = sigmoid,
             output_func: Callable = lambda x: x,
             cost_func: Callable = cost_ols,
@@ -200,7 +200,7 @@ class FFNN:
                 val_error=val_errors[e],
                 val_acc=val_accs[e],
         )
-        sys.stdout.write("")
+        print("")
 
         # return performance metrics for the entire run
         scores = dict()
@@ -473,7 +473,7 @@ if __name__ == "__main__":
         [1, 0],
         [1, 1]
     ])
-    tOR = np.asarray([
+    t = np.asarray([
         [0],
         [1],
         [1],
@@ -490,7 +490,7 @@ if __name__ == "__main__":
     )
     obj.fit(
         X,
-        tOR,
+        t,
         scheduler=Constant(eta=0.5),
         epochs=1000,
     )
