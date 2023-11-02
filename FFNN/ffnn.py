@@ -363,9 +363,7 @@ class FFNN:
                 # for single class classification
                 else:
                     cost_func_derivative = grad(self.cost_func(t))
-                    delta_matrix = out_derivative(
-                            self.z_matrices[i + 1]
-                    ) * cost_func_derivative(self.a_matrices[i + 1])
+                    delta_matrix = out_derivative(self.z_matrices[i + 1]) * cost_func_derivative(self.a_matrices[i + 1])
 
             # delta terms for hidden layer
             else:
