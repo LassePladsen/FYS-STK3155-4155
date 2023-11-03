@@ -4,22 +4,26 @@ from cost import *
 from scheduler import *
 
 import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score
 
-# Pparameters
-lmbda = 0.001  # Ridge hyperparameter lambda
+# Parameters
+n = 100  # no. data points
+noise_std = 1  # standard deviation of noise
+xmax = 5  # max x value
+
+lmbda = 0.0001  # shrinkage  hyperparameter lambda
 eta = 0.01  # learning rate
-degree = 3  # polynomial degree for design matrix
+degree = 1  # max polynomial degree for design matrix
 n_epochs = 1000  # no. epochs/iterations for nn training
-
-n = 8  # no. data points
-noise_std = 0.1  # standard deviation of noise
 rng_seed = 2023  # seed for generating psuedo-random values, helps withbugging purposes
 
 # Create data set
 rng = np.random.default_rng(rng_seed)
-x = rng.random((n, 1))#.reshape(-1, 1)
+x = rng.uniform(-xmax, xmax, size=(n, 1))#.reshape(-1, 1)
 noise = rng.normal(0, noise_std, x.shape)
-y = 5 - 10 * x + 2 * x**2# + noise
+y = 2 + 3*x + 4*x**2# + noise
 
 def create_X_1d(x, n):
     """Returns the design matrix X from coordinates x with n polynomial degrees."""
@@ -34,27 +38,49 @@ def create_X_1d(x, n):
 
     return X
 
-X = create_X_1d(x, degree)
+
+x_test, x_train, y_test, y_train = train_test_split(x, y, test_size=0.2,
+                                                    random_state=rng_seed)
+
+X_train = create_X_1d(x_train, degree)
+X_test = create_X_1d(x_test, degree)
 
 nn = FFNN(
-    dimensions=[X.shape[1], 50, 1],
+    dimensions=[X_train.shape[1], 50, 1],
     hidden_func=sigmoid,
     output_func=identity,
     cost_func=cost_ols,
     seed=rng_seed,
 )
 
-nn.fit(
-        X=X,
-        t=y,
+scores = nn.fit(
+        X=X_train,
+        t=y_train,
         lam=lmbda,
         epochs=n_epochs,
         scheduler=Constant(eta=eta),
+        # scheduler=Adam(eta=eta, rho=0.01, rho2=0.01),
 )
 
-pred = nn.predict(X)
-print("\nData:")
-print(y.ravel())
-print("\nPredictions:")
-print(pred.ravel())
+pred = nn.predict(X_test)
+
+# PRINT DATA AND PREDICTION
+# print("\nData:")
+# print(y.ravel())
+# print("\nPredictions:")
+# print(pred.ravel())
+
+# PLOT DATA AND PREDICTION
+# mse = scores["train_errors"][-1]
+test_mse = cost_ols(y_test)(pred)
+test_r2 = r2_score(y_test, pred)
+sort_order = np.argsort(x_test.ravel())
+x_sort = x_test.ravel()[sort_order]
+plt.scatter(x_sort, y_test.ravel()[sort_order], 5, label="Test data")
+plt.plot(x_sort, pred.ravel()[sort_order], "r-", label="Prediction fit")
+plt.title(f"$p={degree}$ | $\eta={eta}$ | $\lambda={lmbda}$ | {n_epochs=} | mse={test_mse:.1f} | r2={test_r2:.2f}")
+plt.legend()
+plt.show()
+
+# PLOT MSE AS FUNC OF POLY DEG
 

@@ -11,7 +11,6 @@ from cost import cost_ols, cost_logreg, cost_crossentropy
 from activation import identity, sigmoid, softmax, relu, lrelu, derivate
 from scheduler import Scheduler, Constant
 
-
 warnings.simplefilter("error")
 
 
@@ -356,20 +355,20 @@ class FFNN:
             # delta terms for output
             if i == len(self.weights) - 1:
                 # for multi-class classification
-                if (
-                        self.output_func.__name__ == "softmax"
-                ):
+                if (self.output_func.__name__ == "softmax"):
                     delta_matrix = self.a_matrices[i + 1] - t
                 # for single class classification
                 else:
                     cost_func_derivative = grad(self.cost_func(t))
-                    delta_matrix = out_derivative(self.z_matrices[i + 1]) * cost_func_derivative(self.a_matrices[i + 1])
+                    delta_matrix = (out_derivative(self.z_matrices[i + 1])
+                                    * cost_func_derivative(self.a_matrices[i + 1]))
 
             # delta terms for hidden layer
             else:
                 delta_matrix = (
-                                       self.weights[i + 1][1:, :] @ delta_matrix.T
-                               ).T * hidden_derivative(self.z_matrices[i + 1])
+                        (self.weights[i + 1][1:, :] @ delta_matrix.T).T
+                        * hidden_derivative(self.z_matrices[i + 1])
+                )
 
             # calculate gradient
             gradient_weights = self.a_matrices[i][:, 1:].T @ delta_matrix
@@ -464,7 +463,7 @@ class FFNN:
         return f"{value:.{decimals - n - 1}f}"
 
 
-if __name__ == "__main__":
+"""if __name__ == "__main__":
     X = np.asarray([
         [0, 0],
         [0, 1],
@@ -478,18 +477,17 @@ if __name__ == "__main__":
         [1]
     ])
 
-
     obj = FFNN(
-        dimensions=(2, 2, 1),
-        hidden_func=sigmoid,
-        output_func=sigmoid,
-        cost_func=cost_logreg,
-        seed=2023,
+            dimensions=(2, 2, 1),
+            hidden_func=sigmoid,
+            output_func=sigmoid,
+            cost_func=cost_logreg,
+            seed=2023,
     )
     obj.fit(
-        X,
-        t,
-        scheduler=Constant(eta=0.5),
-        epochs=1000,
+            X,
+            t,
+            scheduler=Constant(eta=0.5),
+            epochs=1000,
     )
-    print(obj.predict(X))
+    print(obj.predict(X))"""
