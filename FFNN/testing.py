@@ -65,22 +65,24 @@ scores = nn.fit(
 pred = nn.predict(X_test)
 
 # PRINT DATA AND PREDICTION
-# print("\nData:")
-# print(y.ravel())
-# print("\nPredictions:")
-# print(pred.ravel())
+print("\nData:")
+print(y.ravel())
+print("\nPredictions:")
+print(pred.ravel())
 
 # PLOT DATA AND PREDICTION
 # mse = scores["train_errors"][-1]
-test_mse = cost_ols(y_test)(pred)
-test_r2 = r2_score(y_test, pred)
-sort_order = np.argsort(x_test.ravel())
-x_sort = x_test.ravel()[sort_order]
-plt.scatter(x_sort, y_test.ravel()[sort_order], 5, label="Test data")
-plt.plot(x_sort, pred.ravel()[sort_order], "r-", label="Prediction fit")
-plt.title(f"$p={degree}$ | $\eta={eta}$ | $\lambda={lmbda}$ | {n_epochs=} | mse={test_mse:.1f} | r2={test_r2:.2f}")
-plt.legend()
-plt.show()
+# test_mse = cost_ols(y_test)(pred)
+# test_r2 = r2_score(y_test, pred)
+# sort_order = np.argsort(x_test.ravel())
+# x_sort = x_test.ravel()[sort_order]
+# plt.scatter(x_sort, y_test.ravel()[sort_order], 5, label="Test data")
+# plt.plot(x_sort, pred.ravel()[sort_order], "r-", label="Prediction fit")
+# plt.title(f"$p={degree}$ | $\eta={eta}$ | $\lambda={lmbda}$ | {n_epochs=} | mse={test_mse:.1f} | r2={test_r2:.2f}")
+# plt.legend()
+# plt.show()
 
 # PLOT MSE AS FUNC OF POLY DEG
 
+print(nn.z_matrices[1])
+print(sigmoid(nn.z_matrices[1]))
